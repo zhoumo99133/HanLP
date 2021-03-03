@@ -69,6 +69,9 @@ public class CoreBiGramTableDictionary
             int maxWordId = CoreDictionary.trie.size();
             while ((line = br.readLine()) != null)
             {
+                if (line.isEmpty()){
+                    continue;
+                }
                 String[] params = line.split("\\s");
                 String[] twoWord = params[0].split("@", 2);
                 String a = twoWord[0];

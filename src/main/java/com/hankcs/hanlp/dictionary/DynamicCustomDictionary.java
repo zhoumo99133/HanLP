@@ -239,6 +239,9 @@ public class DynamicCustomDictionary
                     line = IOUtil.removeUTF8BOM(line);
                     firstLine = false;
                 }
+                if (line.isEmpty()){
+                    continue;
+                }
                 String[] param = line.split(splitter);
                 if (param[0].length() == 0) continue;   // 排除空行
                 if (HanLP.Config.Normalization) param[0] = CharTable.convert(param[0]); // 正规化

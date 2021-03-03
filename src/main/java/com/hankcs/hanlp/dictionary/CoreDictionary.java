@@ -72,6 +72,9 @@ public class CoreDictionary
             long start = System.currentTimeMillis();
             while ((line = br.readLine()) != null)
             {
+                if (line.isEmpty()){
+                    continue;
+                }
                 String param[] = line.split("\\s");
                 int natureCount = (param.length - 1) / 2;
                 CoreDictionary.Attribute attribute = new CoreDictionary.Attribute(natureCount);
