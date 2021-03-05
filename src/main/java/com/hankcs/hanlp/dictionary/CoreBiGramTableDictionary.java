@@ -72,6 +72,9 @@ public class CoreBiGramTableDictionary
                 if (line.isEmpty()){
                     continue;
                 }
+                if (line.startsWith("###")){
+                    continue;
+                }
                 String[] params = line.split("\\s");
                 String[] twoWord = params[0].split("@", 2);
                 String a = twoWord[0];
