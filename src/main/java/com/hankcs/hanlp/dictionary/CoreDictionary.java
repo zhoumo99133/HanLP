@@ -68,7 +68,7 @@ public class CoreDictionary {
                 if (line.isEmpty()) {
                     continue;
                 }
-                if (line.startsWith("###")) {
+                if (line.startsWith("#")) {
                     continue;
                 }
                 String param[] = line.split("\\s");

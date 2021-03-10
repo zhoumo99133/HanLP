@@ -72,7 +72,7 @@ public class CoreBiGramTableDictionary
                 if (line.isEmpty()){
                     continue;
                 }
-                if (line.startsWith("###")){
+                if (line.startsWith("#")){
                     continue;
                 }
                 String[] params = line.split("\\s");
