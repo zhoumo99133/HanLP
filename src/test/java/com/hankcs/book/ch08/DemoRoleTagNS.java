@@ -40,7 +40,7 @@ public class DemoRoleTagNS
 
     private static void train(String corpus, String model)
     {
-        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath); // 核心词典
+        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath[0]); // 核心词典
         NSDictionaryMaker maker = new NSDictionaryMaker(dictionary); // 训练模块
         maker.train(corpus); // 在语料库上训练
         maker.saveTxtTo(model); // 输出HMM到txt

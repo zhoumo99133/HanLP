@@ -32,16 +32,16 @@ import static com.hankcs.hanlp.utility.Predefine.logger;
  */
 public class CoreDictionary {
     public static DoubleArrayTrie<Attribute> trie = new DoubleArrayTrie<Attribute>();
-    public final static String path = HanLP.Config.CoreDictionaryPath;
+    public final static String[] path = HanLP.Config.CoreDictionaryPath;
     public static final int totalFrequency = 221894;
 
     // 自动加载词典
     static {
         long start = System.currentTimeMillis();
-        if (!load(path)) {
-            throw new IllegalArgumentException("核心词典" + path + "加载失败");
+        if (!load_new(path)) {
+            throw new IllegalArgumentException("核心词典" + path[0] + "加载失败");
         } else {
-            logger.info(path + "加载成功，" + trie.size() + "个词条，耗时" + (System.currentTimeMillis() - start) + "ms");
+            logger.info(path[0] + "加载成功，" + trie.size() + "个词条，耗时" + (System.currentTimeMillis() - start) + "ms");
         }
     }
 
@@ -53,6 +53,68 @@ public class CoreDictionary {
     public static final int X_WORD_ID = getWordID(Predefine.TAG_CLUSTER);
     public static final int M_WORD_ID = getWordID(Predefine.TAG_NUMBER);
     public static final int NX_WORD_ID = getWordID(Predefine.TAG_PROPER);
+
+    private static boolean load_new(String[] paths) {
+        if (loadDat(paths[0])) return true;
+        TreeMap<String, CoreDictionary.Attribute> map = new TreeMap<String, Attribute>();
+        for (String path : paths) {
+            logger.info("核心词典开始加载:" + path);
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new InputStreamReader(IOUtil.newInputStream(path), "UTF-8"));
+                String line;
+                int MAX_FREQUENCY = 0;
+                long start = System.currentTimeMillis();
+                while ((line = br.readLine()) != null) {
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+                    if (line.startsWith("#")) {
+                        continue;
+                    }
+                    String[] param = line.split("\\s");
+                    int natureCount = (param.length - 1) / 2;
+                    CoreDictionary.Attribute attribute = new CoreDictionary.Attribute(natureCount);
+                    for (int i = 0; i < natureCount; ++i) {
+                        attribute.nature[i] = Nature.create(param[1 + 2 * i]);
+                        attribute.frequency[i] = Integer.parseInt(param[2 + 2 * i]);
+                        attribute.totalFrequency += attribute.frequency[i];
+                    }
+                    map.put(param[0], attribute);
+                    MAX_FREQUENCY += attribute.totalFrequency;
+                }
+                logger.info("核心词典读入词条" + map.size() + " 全部频次" + MAX_FREQUENCY + "，耗时" + (System.currentTimeMillis() - start) + "ms");
+                br.close();
+            } catch (FileNotFoundException e) {
+                logger.warning("核心词典" + path + "不存在！" + e);
+                return false;
+            } catch (IOException e) {
+                logger.warning("核心词典" + path + "读取错误！" + e);
+                return false;
+            }
+        }
+        trie.build(map);
+        logger.info("核心词典加载成功:" + trie.size() + "个词条，下面将写入缓存……");
+        try {
+            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(IOUtil.newOutputStream(paths[0] + Predefine.BIN_EXT)));
+            Collection<CoreDictionary.Attribute> attributeList = map.values();
+            out.writeInt(attributeList.size());
+            for (CoreDictionary.Attribute attribute : attributeList) {
+                out.writeInt(attribute.totalFrequency);
+                out.writeInt(attribute.nature.length);
+                for (int i = 0; i < attribute.nature.length; ++i) {
+                    out.writeInt(attribute.nature[i].ordinal());
+                    out.writeInt(attribute.frequency[i]);
+                }
+            }
+            trie.save(out);
+            out.close();
+        } catch (Exception e) {
+            logger.warning("保存失败" + e);
+            return false;
+        }
+        return true;
+    }
 
     private static boolean load(String path) {
         logger.info("核心词典开始加载:" + path);
@@ -372,9 +434,9 @@ public class CoreDictionary {
      * @return 是否成功
      */
     public static boolean reload() {
-        String path = CoreDictionary.path;
-        IOUtil.deleteFile(path + Predefine.BIN_EXT);
+        String[] path = CoreDictionary.path;
+        IOUtil.deleteFile(path[0] + Predefine.BIN_EXT);
 
-        return load(path);
+        return load_new(path);
     }
 }

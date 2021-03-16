@@ -43,7 +43,7 @@ public class DemoRoleTagNR
 
     private static void trainOneSentence()
     {
-        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath); // 核心词典
+        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath[0]); // 核心词典
         NRDictionaryMaker maker = new NRDictionaryMaker(dictionary); // 训练模块
         maker.verbose = true; // 调试输出
         maker.learn(Sentence.create("这里/r 有/v 关天培/nr 的/u 有关/vn 事迹/n 。/w")); // 学习一个句子
@@ -52,7 +52,7 @@ public class DemoRoleTagNR
 
     private static void train(String corpus, String model)
     {
-        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath); // 核心词典
+        EasyDictionary dictionary = EasyDictionary.create(HanLP.Config.CoreDictionaryPath[0]); // 核心词典
         NRDictionaryMaker maker = new NRDictionaryMaker(dictionary); // 训练模块
         maker.train(corpus); // 在语料库上训练
         maker.saveTxtTo(model); // 输出HMM到txt

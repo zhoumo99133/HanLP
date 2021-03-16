@@ -83,8 +83,8 @@ public class DemoNgramSegment
     public static Segment loadBigram(String modelPath, boolean verbose, boolean viterbi)
     {
 //        HanLP.Config.enableDebug();
-        HanLP.Config.CoreDictionaryPath = modelPath + ".txt";
-        HanLP.Config.BiGramDictionaryPath = modelPath + ".ngram.txt";
+        HanLP.Config.CoreDictionaryPath = new String[]{modelPath + ".txt"};
+        HanLP.Config.BiGramDictionaryPath = new String[]{modelPath + ".ngram.txt"};
         CoreDictionary.reload();
         CoreBiGramTableDictionary.reload();
         // 以下部分为兼容新标注集，不感兴趣可以跳过

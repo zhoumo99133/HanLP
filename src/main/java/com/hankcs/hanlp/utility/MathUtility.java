@@ -17,9 +17,7 @@ import com.hankcs.hanlp.seg.common.Vertex;
 import java.util.Map;
 import java.util.Set;
 
-import static com.hankcs.hanlp.utility.Predefine.MAX_FREQUENCY;
-import static com.hankcs.hanlp.utility.Predefine.dSmoothingPara;
-import static com.hankcs.hanlp.utility.Predefine.dTemp;
+import static com.hankcs.hanlp.utility.Predefine.*;
 
 /**
  * 一些数学小工具
@@ -141,7 +139,7 @@ public class MathUtility
         {
             value = -value;
         }
-//        logger.info(String.format("%5s frequency:%6d, %s nTwoWordsFreq:%3d, weight:%.2f", from.word, frequency, from.word + "@" + to.word, nTwoWordsFreq, value));
+        logger.info(String.format("%5s frequency:%6d, %s nTwoWordsFreq:%3d, weight:%.2f", from.word, frequency, from.word + "@" + to.word, nTwoWordsFreq, value));
         return value;
     }
 
